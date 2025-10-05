@@ -1,7 +1,6 @@
 {
   "name": "Mi Stock Natura",
   "short_name": "Stock Natura",
-  "description": "Control de stock para productos Natura. PWA con lector de barras, venta rápida, historial y exportaciones.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0f0f0f",
