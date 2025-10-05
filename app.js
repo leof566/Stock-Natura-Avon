@@ -1,1 +1,1 @@
-console.log('Mi Stock Natura v4 listo');
+console.log('Mi Stock Natura v4: deudores + calculadora activos');
