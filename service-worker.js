@@ -1,4 +1,4 @@
-const CACHE = 'msn-v4';
+const CACHE = 'msn-v4-fixcalc';
 const ASSETS = [
   './',
   './index.html',

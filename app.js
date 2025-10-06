@@ -1,8 +1,11 @@
 /* Mi Stock Natura – v4: deudores + calculadora + mejoras */
+
+// Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js'));
 }
 
+// IndexedDB
 const DB_NAME = 'mi-stock-natura';
 const STORE = 'items';
 const DEB_STORE = 'debtors';
@@ -10,7 +13,7 @@ let db;
 
 function openDB(){
   return new Promise((res,rej)=>{
-    const req = indexedDB.open(DB_NAME, 2);
+    const req = indexedDB.open(DB_NAME, 2); // v2 añade deudores
     req.onupgradeneeded = () => {
       const db = req.result;
       if(!db.objectStoreNames.contains(STORE)){
@@ -234,7 +237,7 @@ dateFromEl.addEventListener('change', render);
 dateToEl.addEventListener('change', render);
 dateModeEl.addEventListener('change', render);
 
-// Exportar Excel (Inventario)
+// Exportar Excel/PDF Inventario
 exportExcelBtn.addEventListener('click', ()=>{
   const data = getFiltered().map(it=>({
     Nombre: it.name, Codigo: it.barcode, Precio: it.price,
@@ -247,8 +250,6 @@ exportExcelBtn.addEventListener('click', ()=>{
   XLSX.utils.book_append_sheet(wb, ws, 'Stock');
   XLSX.writeFile(wb, 'mi-stock-natura.xlsx');
 });
-
-// Exportar PDF (Inventario)
 exportPDFBtn.addEventListener('click', ()=>{
   const rows = getFiltered();
   const { jsPDF } = window.jspdf;
@@ -315,8 +316,7 @@ installHint?.addEventListener('click', ()=>{
   alert('Para instalar: en Android/Chrome tocá ⋮ > "Agregar a pantalla principal". En iOS/Safari: Compartir > "Agregar a pantalla de inicio".');
 });
 
-// Escáner + venta rápida
-let readerZX;
+/* ===== Escáner + Venta rápida ===== */
 async function toggleScan(mode='ADD'){
   if(scanning){ stopScan(); return; }
   scanMode = mode;
@@ -348,10 +348,10 @@ async function toggleScan(mode='ADD'){
       };
       loop();
     } else {
-      readerZX = new ZXingBrowser.BrowserMultiFormatReader();
+      reader = new ZXingBrowser.BrowserMultiFormatReader();
       const devices = await ZXingBrowser.BrowserCodeReader.listVideoInputDevices();
       const deviceId = (devices.find(d=>/back|environment/i.test(d.label))||devices[0]||{}).deviceId;
-      await readerZX.decodeFromVideoDevice(deviceId, video, (result,err)=>{
+      await reader.decodeFromVideoDevice(deviceId, video, (result,err)=>{
         if(result){
           const code = result.getText();
           if(scanMode==='ADD'){ barcodeEl.value = code; beep.currentTime=0; beep.play(); stopScan(); }
@@ -382,7 +382,7 @@ async function handleQuickSale(code){
 function stopScan(){
   scanning=false; scanBox.style.display='none';
   if(video.srcObject){ video.srcObject.getTracks().forEach(t=>t.stop()); video.srcObject=null; }
-  if(readerZX){ try{ readerZX.reset(); }catch(_){} }
+  if(reader){ try{ reader.reset(); }catch(_){} }
 }
 scanBtn?.addEventListener('click', ()=>toggleScan('ADD'));
 quickSaleBtn?.addEventListener('click', ()=>toggleScan('SALE'));
@@ -471,7 +471,7 @@ debExportExcelBtn?.addEventListener('click', ()=>{
   XLSX.writeFile(wb, 'deudores-mi-stock-natura.xlsx');
 });
 
-// ---------- Calculadora ----------
+/* ===== Calculadora ===== */
 document.addEventListener('click', (e)=>{
   const b = e.target.closest('[data-c]'); if(!b) return;
   const c = b.getAttribute('data-c');
@@ -491,4 +491,5 @@ document.addEventListener('click', (e)=>{
   calcDisplay.textContent = expr;
 });
 
+// Init
 (async()=>{ await openDB(); await load(); await dLoad(); })();

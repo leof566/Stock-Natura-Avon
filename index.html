@@ -10,7 +10,7 @@
   <style>
     :root{--naranja:#ff7a00;--naranja-osc:#d86500;--bg:#0f0f0f;--panel:#171717;--text:#f2f2f2;--muted:#a7a7a7;--ok:#22c55e;--bad:#ef4444}
     html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; background:var(--bg); color:var(--text)}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;background:var(--bg);color:var(--text)}
     .wrap{max-width:960px;margin:0 auto;padding:16px}
     .card{background:var(--panel);border-radius:16px;padding:16px;box-shadow:0 6px 30px rgba(0,0,0,.35)}
     .title{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;margin:0 0 12px}
@@ -22,7 +22,7 @@
     input:focus,select:focus{outline:2px solid var(--naranja)}
     button{background:var(--naranja);color:#111;border:none;font-weight:700;cursor:pointer}
     button:hover{background:var(--naranja-osc)}
-    .btn-ghost{background:#1b1b1b;color:var(--text);border:1px solid #2a2a2a}
+    .btn-ghost{background:#1b1b1b;color:#fff;border:1px solid #2a2a2a}
     .grid{display:grid;gap:12px}
     .toolbar{display:flex;flex-wrap:wrap;gap:8px}
     .table{width:100%;border-collapse:collapse}
@@ -47,7 +47,7 @@
     .calc button{padding:14px}
     .calc .wide{grid-column: span 2}
   </style>
-  <!-- Librerías (cacheadas para offline por el SW) -->
+  <!-- Librerías (cacheadas offline por el Service Worker) -->
   <script defer src="https://unpkg.com/@zxing/browser@0.1.5"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -57,6 +57,7 @@
   <div class="wrap">
     <h1 class="title">🧡 Mi Stock Natura <span class="badge">PWA</span></h1>
 
+    <!-- Inventario -->
     <div class="card grid">
       <div class="grid">
         <h2 style="margin:0">Agregar producto</h2>
@@ -93,6 +94,7 @@
             <button id="quickSaleBtn">⚡ Venta rápida</button>
           </div>
         </div>
+
         <div class="scan-preview" id="scanBox" style="display:none">
           <video id="video" playsinline></video>
           <div class="scan-overlay"></div>
@@ -198,8 +200,10 @@
           <button data-c="+">+</button>
           <button class="wide btn-ghost" data-c="⌫">⌫</button>
           <button class="wide" data-c="=">=</button>
-          <button class="wide btn-ghost" data-c=".">.</button>
-          <button class="wide btn-ghost" data-c="%">%</button>
+          <!-- Fila final con 0 -->
+          <button class="wide" data-c="0">0</button>
+          <button class="btn-ghost" data-c=".">.</button>
+          <button class="btn-ghost" data-c="%">%</button>
         </div>
       </div>
     </div>
