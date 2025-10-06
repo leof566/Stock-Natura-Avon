@@ -1,7 +1,7 @@
 {
   "name": "Mi Stock Natura",
   "short_name": "Stock Natura",
-  "description": "Control de stock Natura con lector de barras, venta rápida, deudores y calculadora.",
+  "description": "Control de stock + deudores. PWA con lector de barras, venta rápida, historial, exportaciones y calculadora.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0f0f0f",
